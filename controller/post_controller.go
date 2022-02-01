@@ -33,4 +33,30 @@ func CreatePost(c *gin.Context) {
 		"error": false,
 		"id": id,
 	})
-}	
+}
+
+func GetPosts(c *gin.Context) {
+	var posts []Post
+
+	rows, err := dbclient.DBClient.Query("SELECT id, title, content, created_at FROM posts")
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error": true,
+		})
+		return
+	}
+
+	for rows.Next() {
+		var post Post
+		if err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.CreatedAt); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, gin.H{
+				"error": true,
+			})
+			return
+		}
+
+		posts = append(posts, post)
+	}
+
+	c.JSON(http.StatusOK, posts)
+}

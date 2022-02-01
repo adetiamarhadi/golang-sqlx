@@ -12,6 +12,7 @@ func main() {
 	r := gin.Default()
 
 	r.POST("/", controller.CreatePost)
+	r.GET("/", controller.GetPosts)
 
 	if err := r.Run(":5000"); err != nil {
 		panic(err.Error())
