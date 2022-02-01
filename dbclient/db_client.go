@@ -1,15 +1,14 @@
 package dbclient
 
 import (
-	"database/sql"
-
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
-var DBClient *sql.DB
+var DBClient *sqlx.DB
 
 func InitialiseDBConnection() {
-	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/test_db?parseTime=true")
+	db, err := sqlx.Open("mysql", "root:root@tcp(localhost:3306)/test_db?parseTime=true")
 	if err != nil {
 		panic(err.Error())
 	}
