@@ -13,6 +13,7 @@ func main() {
 
 	r.POST("/", controller.CreatePost)
 	r.GET("/", controller.GetPosts)
+	r.GET("/:id", controller.GetPost)
 
 	if err := r.Run(":5000"); err != nil {
 		panic(err.Error())

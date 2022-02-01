@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"database/sql"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/adetiamarhadi/golang-sqlx/dbclient"
@@ -59,4 +61,27 @@ func GetPosts(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, posts)
+}
+
+func GetPost(c *gin.Context) {
+	idStr := c.Param("id")
+	id, _ := strconv.Atoi(idStr)
+
+	row := dbclient.DBClient.QueryRow("SELECT id, title, content, created_at FROM posts WHERE id = ?", id)
+
+	var post Post
+	if err := row.Scan(&post.ID, &post.Title, &post.Content, &post.CreatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": true,
+			})
+			return
+		}
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": true,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, post)
 }
